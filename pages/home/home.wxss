@@ -1,1 +1,3 @@
-/* pages/home/home.wxss */
+.popular{
+  width: 100%;
+}

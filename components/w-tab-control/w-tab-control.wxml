@@ -1,0 +1,10 @@
+<view class="tab-bar">
+  <view wx:for="{{titles}}"
+         wx:key="index"
+         bind:tap="titleTap"
+         data-title-index="{{index}}"
+         class="title {{currentIndex==index?'active':''}}"
+         >
+    <text class="title-text">{{item}}</text>
+  </view>
+</view>

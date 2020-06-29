@@ -1,0 +1,20 @@
+.tab-bar{
+  display: flex;
+}
+.title{
+  flex: 1;
+  text-align: center;
+  font-size: 36rpx;
+  color:rgb(104, 88, 88);
+}
+.title-text{
+  display: inline-block;
+  width: 100rpx;
+  padding-bottom: 10rpx;
+}
+.active .title-text{
+  color: #ff5777;
+  border-bottom: solid 2rpx #ff5777;
+  
+  
+}

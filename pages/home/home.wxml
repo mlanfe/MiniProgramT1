@@ -1,2 +1,9 @@
-<!--pages/home/home.wxml-->
-<text>Hello World</text>
+<w-swiper banners="{{banners}}" />
+<w-recommends recommends="{{recommends}}"/>
+<view>
+  <image class='popular' mode="widthFix" src="/assets/home/popular_bg.jpg"/>
+</view>
+<w-tab-control bind:titleTap="titleTap" titles="{{titles}}"/>
+<w-goods goods="{{goods[currentTitle].list}}"/>
+<!--自定义组件中hidden属性无效 -->
+<w-back-top wx:if="{{isShow}}"/>

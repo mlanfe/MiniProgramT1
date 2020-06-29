@@ -1,66 +1,77 @@
-// pages/home/home.js
+import { getHomeMultiData, getHomeGoods} from '../../service/home'
 Page({
-
-  /**
-   * 页面的初始数据
-   */
   data: {
-
+    banners:[],
+    recommends:[],
+    titles:["流行","新款","精选"],
+    goods:{
+      pop:{list:[], page:0},
+      new:{list:[], page:0},
+      sell:{list:[], page:0}
+    },
+    currentTitle:"pop",
+    isShow:false
   },
-
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad: function (options) {
-
+  onLoad: function () {
+    this._getHomeMultiData()
+    this._getHomeGoods("pop")
+    this._getHomeGoods("new")
+    this._getHomeGoods("sell")
   },
+  // ------------------与网络请求相关的方法-------------------------
+  _getHomeGoods(type){
+    const page = this.data.goods[type].page + 1
+    getHomeGoods(type,page).then(res => {
+      const list = res.data.data.list
 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
+      // 不能直接写成: newList = this.data.goods[type].list.push(...list)
+      // push返回值是新数组的宽度
+      const newList = this.data.goods[type].list
+      newList.push(...list)
 
+      const typeKey = `goods.${type}.list`
+      const pageKey = `goods.${type}.page`
+      this.setData({
+        [typeKey]:newList,
+        [pageKey]:page
+      })
+    })
   },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
+  _getHomeMultiData(){
+    getHomeMultiData().then(res => {
+      console.log(res)
+      const banners = res.data.data.banner.list
+      const recommends = res. data.data.recommend.list
+      this.setData({
+        banners,
+        recommends
+      })
+    }).catch(res => {
+      console.log('error'+res)
+    })
   },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
+  // --------------------------监听tabbar的点击--------------------
+  titleTap(event){
+    const type=["pop","new","sell"]
+    const index =event.detail.titleIndex
+    this.setData({
+      currentTitle:type[index]
+    })
+  } ,
+  // ----------------上拉加载更多----------------------- 
+  onReachBottom(){
+    console.log("页面滚动到底部");
+    this._getHomeGoods(this.data.currentTitle)
   },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
+  // ----------------监听页面滚动位置--------------------
+  onPageScroll(opt){
+    const y = opt.scrollTop
+    //官方推荐: 不用再滚动函数中频繁调用this.setData()
+    const show = (y>=1000)
+    if(this.data.isShow != show){
+      this.setData({
+        isShow: show
+      })
+    }
   }
 })
